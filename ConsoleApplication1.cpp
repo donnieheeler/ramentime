@@ -20,6 +20,9 @@ int truework;
 int loss;
 int warning;
 int praise = 0;
+int dayspassed;
+int ramensold;
+
 string dayname;
 string owner;
 
@@ -69,15 +72,36 @@ void nameowner()
 	cout << "Sign with first name: ";
 	cin >> owner;
 	cout << string(100, '\n');
-	cout << "Hello Chief " << owner << "! Welcome to Ramen Time! It is your first day! \n \n";
-	cout << "You currently have " << workers << " workers.";
+	cout << "Hello Chief " << owner << "! Welcome to Ramen Time! Let's get to work!";
 	cout << "\n\nPress [SPACE] to continue!";
 	getch();
+}
+
+void dayresults()
+{
+
+	if (warning >= 5)
+	{
+		workers -= 1;
+		cout << "\n\nOh no you did so bad you had to let someone go!";
+		warning = 0;
+		getch();
+	}
+
+	else if (praise >= 3)
+	{
+		workers += 1;
+		cout << "\n\nWow nice! You managed to hire someone new!";
+		praise = 0;
+		getch();
+	}
 }
 
 //results and back to workchoose
 void gamealg2()
 {
+	dayspassed += 1;
+
 	if (date == 7)
 	{
 		date = date - 6;
@@ -86,6 +110,9 @@ void gamealg2()
 	{
 		date = date + 1;
 	}
+
+	dayresults();
+
 }
 
 //main game algorithm
@@ -95,10 +122,19 @@ void gamealg()
 	sales = -sales;
 	loss = abs(sales);
 
+	if (truework > customers)
+	{
+		ramensold += customers;
+	}
+	else
+	{
+		ramensold += (customers - sales);
+	}
+
 	if (loss < 10)
 	{
 	yelp_bonus = yelp_bonus + (customers / 10);
-	praise = praise + yelp_bonus;
+	praise = praise + (customers /10);
 	cout << "Good job! You got " << (customers / 10) << " good Yelp review(s).";
 	}
 
@@ -132,7 +168,7 @@ void gamealg()
 void workchoose() 
 {
 	cout << string(100, '\n');
-	cout << "Today is " << dayname << ". You currently have " << workers << " workers.\n\n";
+	cout << "Today is " << dayname << ". You currently have " << workers << " worker(s).\n\n";
 	cout << "How many workers would you like to send out?\n\nWorkers to send out: ";
 	cin >> dayworkers;
 	cout << string(100, '\n');
@@ -192,6 +228,26 @@ void customersoftheday()
 	workchoose();
 }
 
+void endgame() {
+
+	cout << string(100, '\n');
+	if (workers <= 0)
+	{
+
+		cout << "Oh no you had to fire everyone and 'Ramen Time' went bankrupt!\n\n";
+		cout << "You somehow managed to sell " << ramensold << " bowl(s) of ramen in the short time you were open!\n";
+		cout << "\nThank you for playing!";
+	}
+	else
+	{
+		cout << "Congrats! You did very well and hired a ton of people! You managed to sell 'Ramen Time' and retire.\n\n";
+		cout << "You impressively sold a total of " << ramensold << " bowl(s) of ramen! Wow!\n";
+		cout << "\nThank you for playing!";
+	}
+
+	getch();
+}
+
 void ramentime()
 {
 	ramentimelogo();
@@ -200,9 +256,11 @@ void ramentime()
 	do{
 		customersoftheday();
 	} while ((workers > 0) && (workers <= 100));
+	endgame();
 }
 
 int main()
 {
 	ramentime();
+	return 0;
 }
